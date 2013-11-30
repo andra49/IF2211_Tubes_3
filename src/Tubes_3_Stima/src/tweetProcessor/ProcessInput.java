@@ -69,15 +69,12 @@ public class ProcessInput extends HttpServlet {
 		// Initialize data for result.jsp
 		ArrayList<Status> positiveResult = new ArrayList<Status>();
 		ArrayList<Status> negativeResult = new ArrayList<Status>();
-
-		try {
-			// Check input
-			if (keyword == null) throw new Exception("keyword is null");
-			if (selectedMode == null) throw new Exception("selectedMode is null");
-			if (positif == null) throw new Exception("positif is null");
-			if (negatif == null) throw new Exception("negatif is null");
-			
+		ArrayList<String> positiveKeyword = new ArrayList<String>();
+		ArrayList<String> negativeKeyword = new ArrayList<String>();
+		
+		try {			
 			Query query = new Query(keyword);
+			query.setCount(100);
 			QueryResult queryResult;
 			queryResult = twitter.search(query);
 			tweets = queryResult.getTweets();
@@ -94,15 +91,16 @@ public class ProcessInput extends HttpServlet {
 						if (bm.run(sentimenPositif[i])) {
 							positiveResult.add(tweet);
 							positiveStatus = true;
+							positiveKeyword.add(sentimenPositif[i]); // Add keyword
 							break; // Langsung asumsi tweet positif
 						}
 					}
 					// Sentimen negatif
-					if (positiveStatus)
-						break; // Kalo udah positif nggak mungkin jadi negatif
+					if (!positiveStatus) // Kalo udah positif nggak mungkin jadi negatif
 					for (int i = 0; i < sentimenNegatif.length; i++) {
 						if (bm.run(sentimenNegatif[i])) {
 							negativeResult.add(tweet);
+							negativeKeyword.add(sentimenNegatif[i]); // Add keyword
 							positiveStatus = false;
 							break; // Langsung asumsi tweet negatif
 						}
@@ -119,6 +117,8 @@ public class ProcessInput extends HttpServlet {
 
 		request.setAttribute("positiveResult", positiveResult);
 		request.setAttribute("negativeResult", negativeResult);
+		request.setAttribute("positiveKeyword", positiveKeyword);
+		request.setAttribute("negativeKeyword", negativeKeyword);
 		RequestDispatcher view = request.getRequestDispatcher("result.jsp");
 		view.forward(request, response);
 	}

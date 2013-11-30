@@ -12,14 +12,20 @@
 <h1>Result tweet :</h1>
 <%
 	ArrayList<Status> positive = (ArrayList<Status>)request.getAttribute("positiveResult");
+	ArrayList<String> positiveK = (ArrayList<String>)request.getAttribute("positiveKeyword");
 	out.println("<h2>Positive Sentiment Tweets : </h2>");
+	int i = 0;
 	for (Status tweet : positive) {
-	    out.println("<p style=\"color:blue\"> @" + tweet.getUser().getScreenName() + "</p> - " + tweet.getText() + "<br>");
+	    out.println("<p style=\"color:blue\"> @" + tweet.getUser().getScreenName() + "</p>" + tweet.getText() + " <br><p style=\"color:red\">   Keyword : "+ positiveK.get(i) + "</p><br>");
+	    i++;
 	}
+	
 	ArrayList<Status> negative = (ArrayList<Status>)request.getAttribute("negativeResult");
+	ArrayList<String> negativeK = (ArrayList<String>)request.getAttribute("negativeKeyword");
 	out.println("<br><h2>Negative Sentiment Tweets : </h2>");
+	int j = 0;
 	for (Status tweet : negative) {
-	    out.println("<p style=\"color:blue\"> @" + tweet.getUser().getScreenName() + "</p> - " + tweet.getText() + "<br>");
+	    out.println("<p style=\"color:blue\"> @" + tweet.getUser().getScreenName() + "</p>" + tweet.getText() + " <br><p style=\"color:red\">   Keyword : "+ negativeK.get(i) + "</p><br>");
 	}
 %>
 </body>
