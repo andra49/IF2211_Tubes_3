@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import patternMatching.BoyerMoore;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -51,7 +52,7 @@ public class ProcessInput extends HttpServlet {
 	        result = twitter.search(query);
 	        tweets = result.getTweets();
 	        for (Status tweet : tweets) {
-	            System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
+	            //System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
 	        }
 	    }
 	    catch (TwitterException te) {
@@ -59,6 +60,10 @@ public class ProcessInput extends HttpServlet {
 	        System.out.println("Failed to search tweets: " + te.getMessage());
 	        System.exit(-1);
 	    }
+	    BoyerMoore bm = new BoyerMoore(tweets.get(1).getText(), "a");
+	    System.out.println("Message :"+tweets.get(1).getText());
+	    System.out.println("Sentiment :"+"a");
+	    System.out.println("Output :"+bm.run());
 	    request.setAttribute("result", tweets);
 		RequestDispatcher view = request.getRequestDispatcher("result.jsp");
 		view.forward(request, response);
