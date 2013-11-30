@@ -9,7 +9,12 @@
 <body>
 <h1>Welcome to Sentiment Tweet finder!</h1>
 <form name="Input" action="ProcessInput" method="get">
-	<input type="text" name="keyword"/>
+	Keyword : <input type="text" name="keyword"/><br>
+	Sentimen positif (pisahkan dengan spasi): <input type="text" name="positif"/><br>
+	Sentimen negatif (pisahkan dengan spasi): <input type="text" name="negatif"/><br>
+	Search By : <br>
+	<input type="radio" name="metode" value="KMP">KMP<br>
+	<input type="radio" name="metode" value="BM"> Boyer Moore<br>
 	<input type="submit" value="Search"/>
 </form>
 </body>
