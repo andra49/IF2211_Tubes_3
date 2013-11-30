@@ -2,29 +2,27 @@ package patternMatching;
 
 public class BoyerMoore {
 	private String string;
-	private String pattern;
 
 	public BoyerMoore(){
 		
 	}
 	
-	public BoyerMoore(String string, String pattern) {
+	public BoyerMoore(String string) {
 		this.string = string;
-		this.pattern = pattern;
 	}
 
-	public int run() {
-		int last[] = buildLast();
+	public boolean run(String pattern) {
+		int last[] = buildLast(pattern);
 		int n = string.length();
 		int m = pattern.length();
 		int i = m - 1;
 		if (i > n - 1)
-			return -1; // no match if pattern is  // longer than text
+			return false; // no match if pattern is  // longer than text
 		int j = m - 1;
 		do {
 			if (pattern.charAt(j) == string.charAt(i)) {
 				if (j == 0) {
-					return i; // match
+					return true; // match
 				} else { // looking-glass technique
 					i--;
 					j--;
@@ -35,11 +33,11 @@ public class BoyerMoore {
 				j = m - 1;
 			}
 		} while (i <= n - 1);
-		return -1; // no match
+		return false; // no match
 	}
 
-	private int[] buildLast() {
-		int last[] = new int[128];
+	private int[] buildLast(String pattern) {
+		int last[] = new int[256];
 		for (int i = 0; i < 128; i++)
 			last[i] = -1; // initialize array
 		for (int i = 0; i < pattern.length(); i++)
@@ -54,13 +52,4 @@ public class BoyerMoore {
 	public void setString(String string) {
 		this.string = string;
 	}
-
-	public String getPattern() {
-		return pattern;
-	}
-
-	public void setPattern(String pattern) {
-		this.pattern = pattern;
-	}
-
 }
