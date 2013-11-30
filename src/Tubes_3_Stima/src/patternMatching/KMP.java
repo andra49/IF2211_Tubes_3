@@ -1,4 +1,4 @@
-package tweetProcessor;
+package patternMatching;
 
 public class KMP {
 	public void KMP(){
@@ -14,7 +14,7 @@ public class KMP {
 		int i=0,j=0;
 		
 		while (i<n) {
-			if(pattern.charAt((j) == pattern.charAt(i)){
+			if(pattern.charAt(j) == pattern.charAt(i)){
 				if(j==m-1)
 					return i-m+1;
 				i++; j++;
