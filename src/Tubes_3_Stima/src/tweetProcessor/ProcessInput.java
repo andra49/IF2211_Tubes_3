@@ -71,8 +71,8 @@ public class ProcessInput extends HttpServlet {
 		ArrayList<Status> negativeResult = new ArrayList<Status>();
 		ArrayList<String> positiveKeyword = new ArrayList<String>();
 		ArrayList<String> negativeKeyword = new ArrayList<String>();
-		
-		try {			
+
+		try {
 			Query query = new Query(keyword);
 			query.setCount(100);
 			QueryResult queryResult;
@@ -80,29 +80,64 @@ public class ProcessInput extends HttpServlet {
 			tweets = queryResult.getTweets();
 			if (selectedMode.equals("BM")) {
 				System.out.println("Boyer Moore selected");
-				System.out.println("Number of analyzed tweets "+ tweets.size());
+				System.out
+						.println("Number of analyzed tweets " + tweets.size());
+				int temp = 1; // debug
 				for (Status tweet : tweets) {
 					boolean positiveStatus = false;
-					String cleanTweet = tweet.getText().replaceAll("[^\\w\\s]",""); // Tweet tanpa simbol
+					String cleanTweet = tweet.getText().replaceAll("[^\\w\\s]",
+							""); // Tweet tanpa simbol
 					bm.setString(cleanTweet);
-					System.out.println("Analyzed Tweet:\n"+cleanTweet);
+					System.out.println("Analyzed Tweet:\n" + temp +". " + cleanTweet); temp++;
 					// Sentimen positif
 					for (int i = 0; i < sentimenPositif.length; i++) {
 						if (bm.run(sentimenPositif[i])) {
 							positiveResult.add(tweet);
-							positiveStatus = true;
 							positiveKeyword.add(sentimenPositif[i]); // Add keyword
+							positiveStatus = true;
 							break; // Langsung asumsi tweet positif
 						}
 					}
 					// Sentimen negatif
-					if (!positiveStatus) // Kalo udah positif nggak mungkin jadi negatif
-					for (int i = 0; i < sentimenNegatif.length; i++) {
-						if (bm.run(sentimenNegatif[i])) {
-							negativeResult.add(tweet);
-							negativeKeyword.add(sentimenNegatif[i]); // Add keyword
-							positiveStatus = false;
-							break; // Langsung asumsi tweet negatif
+					if (!positiveStatus) { // Kalo udah positif nggak mungkin jadi negatif
+						for (int i = 0; i < sentimenNegatif.length; i++) {
+							if (bm.run(sentimenNegatif[i])) {
+								negativeResult.add(tweet);
+								negativeKeyword.add(sentimenNegatif[i]); // Add keyword
+								positiveStatus = false;
+								break; // Langsung asumsi tweet negatif
+							}
+						}
+					}
+				}
+			} else if (selectedMode.equals("KMP")){
+				System.out.println("KMP mode selected");
+				System.out
+				.println("Number of analyzed tweets " + tweets.size());
+				int temp = 1; // debug
+				for (Status tweet : tweets) {
+					boolean positiveStatus = false;
+					String cleanTweet = tweet.getText().replaceAll("[^\\w\\s]",
+							""); // Tweet tanpa simbol
+					System.out.println("Analyzed Tweet:\n" + temp +". " + cleanTweet); temp++;
+					// Sentimen positif
+					for (int i = 0; i < sentimenPositif.length; i++) {
+						if (KMP.KMPMatch(cleanTweet, sentimenPositif[i]) != -1) {
+							positiveResult.add(tweet);
+							positiveKeyword.add(sentimenPositif[i]); // Add keyword
+							positiveStatus = true;
+							break; // Langsung asumsi tweet positif
+						}
+					}
+					// Sentimen negatif
+					if (!positiveStatus) { // Kalo udah positif nggak mungkin jadi negatif
+						for (int i = 0; i < sentimenNegatif.length; i++) {
+							if (KMP.KMPMatch(cleanTweet, sentimenPositif[i]) != -1) {
+								negativeResult.add(tweet);
+								negativeKeyword.add(sentimenNegatif[i]); // Add keyword
+								positiveStatus = false;
+								break; // Langsung asumsi tweet negatif
+							}
 						}
 					}
 				}
@@ -119,8 +154,11 @@ public class ProcessInput extends HttpServlet {
 		request.setAttribute("negativeResult", negativeResult);
 		request.setAttribute("positiveKeyword", positiveKeyword);
 		request.setAttribute("negativeKeyword", negativeKeyword);
-		RequestDispatcher view = request.getRequestDispatcher("result.jsp");
+		request.setAttribute("mode", selectedMode);
+		System.out.println("Finished packing");
+		RequestDispatcher view = request.getRequestDispatcher("/result.jsp");
 		view.forward(request, response);
+		System.out.println("Finished send");
 	}
 
 	/**

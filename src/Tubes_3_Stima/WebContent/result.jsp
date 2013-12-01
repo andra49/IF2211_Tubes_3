@@ -10,6 +10,7 @@
 </head>
 <body>
 <h1>Result tweet :</h1>
+<h2>With <% out.println(request.getAttribute("mode")); %> Algorithms</h2>
 <%
 	ArrayList<Status> positive = (ArrayList<Status>)request.getAttribute("positiveResult");
 	ArrayList<String> positiveK = (ArrayList<String>)request.getAttribute("positiveKeyword");
